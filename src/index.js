@@ -1,3 +1,5 @@
+import './styles/index.scss';
+
 const first = 'HELLO WORLD!!!';
 const second = 'boom';
 
