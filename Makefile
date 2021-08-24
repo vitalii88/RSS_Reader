@@ -1,4 +1,4 @@
-make:
+install:
 	npm install
 build:
 	NODE_ENV=production npx webpack
