@@ -9,6 +9,9 @@ build-dev:
 lint:
 	npx eslint .
 
+lint-fix:
+	npx eslint . --fix
+
 start:
 	webpack server
 
