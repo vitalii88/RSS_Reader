@@ -8,12 +8,11 @@ import resources from './i18n/index';
 import parser from './parser.js';
 
 const proxy = 'https://hexlet-allorigins.herokuapp.com/get';
-// const testUrl = 'http://lorem-rss.herokuapp.com/feed';
-// const config = { disableCache: true };
-const params = {
+// const curentUrl = 'http://lorem-rss.herokuapp.com/feed';
+const config = {
   disableCache: true,
   // url: 'http://lorem-rss.herokuapp.com/feed',
-  url: 'http://lorem-rss.herokuapp.com',
+  // url: curentUrl,
 };
 
 export default () => i18next.init({
@@ -23,12 +22,13 @@ export default () => i18next.init({
 }).then(() => {
   const states = {
     form: {
-      testUrl: 'https://ru.hexlet.io/lessons.rss',
       currentUrl: '',
       urls: [],
       status: '',
     },
     message: '',
+    feeds: [],
+    posts: [],
   };
 
   const watcherState = onChange(states, (path, value) => render(watcherState, path, value));
@@ -38,21 +38,33 @@ export default () => i18next.init({
     e.preventDefault();
     const formData = new FormData(form);
     validator(formData.get('url')).then((resp) => {
+      // console.log('111111');
+      console.log('first  step => ', resp);
+      states.form.currentUrl = resp;
+      // проверка на дубликаты
       if (states.form.urls.includes(resp)) {
-        watcherState.message = 'exists';
-        throw new Error('already_exists');
+        // console.log('111111');
+        watcherState.message = 'alreadyExists';
+        throw new Error('alreadyExists');
       }
-      watcherState.message = 'sucsses';
+      watcherState.message = 'success';
       return watcherState.form.urls.push(resp);
-    }).then(() => axios.get(proxy, { params }))
+    }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
       .then((resp) => {
-        // console.log('axios resp');
         // console.log(resp);
-        console.log('doc');
-        parser(resp.data.contents);
+
+        const { feed, posts } = parser(resp.data.contents);
+        console.log(feed);
+        console.log(posts);
+        watcherState.feeds = [feed, ...watcherState.feeds];
+        watcherState.posts = [...posts, ...watcherState.posts];
       })
-      .catch(() => {
-        watcherState.form.status = 'false';
+      .then(() => {
+        console.log();
+      })
+      .catch((err) => {
+        console.log('catch err => ', err.message);
+        watcherState.message = err.message;
       });
   });
 });
