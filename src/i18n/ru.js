@@ -4,5 +4,6 @@ export default {
     mustBeUrl: 'Ссылка должна быть валидным URL',
     sucsses: 'RSS успешно загружен',
     uiFeed: 'Фиды',
+    post: 'Посты',
   },
 };
