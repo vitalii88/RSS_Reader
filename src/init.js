@@ -8,11 +8,8 @@ import resources from './i18n/index';
 import parser from './parser.js';
 
 const proxy = 'https://hexlet-allorigins.herokuapp.com/get';
-// const curentUrl = 'http://lorem-rss.herokuapp.com/feed';
 const config = {
   disableCache: true,
-  // url: 'http://lorem-rss.herokuapp.com/feed',
-  // url: curentUrl,
 };
 
 export default () => i18next.init({
@@ -38,12 +35,9 @@ export default () => i18next.init({
     e.preventDefault();
     const formData = new FormData(form);
     validator(formData.get('url')).then((resp) => {
-      // console.log('111111');
       console.log('first  step => ', resp);
       states.form.currentUrl = resp;
-      // проверка на дубликаты
       if (states.form.urls.includes(resp)) {
-        // console.log('111111');
         watcherState.message = 'alreadyExists';
         throw new Error('alreadyExists');
       }
@@ -51,8 +45,6 @@ export default () => i18next.init({
       return watcherState.form.urls.push(resp);
     }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
       .then((resp) => {
-        // console.log(resp);
-
         const { feed, posts } = parser(resp.data.contents);
         console.log(feed);
         console.log(posts);

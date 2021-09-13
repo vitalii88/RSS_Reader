@@ -4,5 +4,7 @@ export default {
     mustBeUrl: 'must be valid URL',
     sucsses: 'RSS loaded successfully',
     uiFeed: 'Feeds',
+    post: 'Post',
+    add: 'Add',
   },
 };
