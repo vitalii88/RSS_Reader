@@ -20,14 +20,14 @@ const postBuilder = (post) => {
   };
 };
 
-export default (rss) => {
+export default (rss, baseUrl) => {
   // debugger;
   const data = parser(rss);
 
   const title = data.querySelector('title').innerHTML;
   const description = data.querySelector('description').innerHTML;
   const posts = Array.from(data.querySelectorAll('item')).map(postBuilder);
-  const result = { feed: { title, description }, posts };
-  console.log(result);
+  const result = { feed: { title, description, baseUrl }, posts };
+  // console.log(result);
   return result;
 };

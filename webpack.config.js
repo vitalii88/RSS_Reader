@@ -3,12 +3,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
-// let mode = 'development';
-//
-// if (process.env.NODE_ENV === 'production') {
-//   mode = 'production';
-// }
-
 module.exports = {
   mode: process.env.NODE_ENV || 'development',
   output: {
@@ -43,7 +37,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html',
+      template: './index.html',
     }),
   ],
 
