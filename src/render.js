@@ -88,7 +88,15 @@ const buildPosts = (data) => {
     button.setAttribute('type', 'button');
     button.setAttribute('data-id', e.id);
     button.setAttribute('data-bs-toggle', 'modal');
-    button.textContent = 'Просмотр';
+    // button.dataset.id = e.id;
+    // button.dataset.bsToggle = 'modal';
+    // button.dataset.bsTarget = '#modal';
+    button.textContent = i18next.t('view');
+
+    button.addEventListener('click', () => {
+      console.log('button click')
+    })
+
     li.appendChild(button);
     ul.appendChild(li);
   });

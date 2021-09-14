@@ -6,5 +6,6 @@ export default {
     uiFeed: 'Feeds',
     post: 'Post',
     add: 'Add',
+    view: 'View',
   },
 };

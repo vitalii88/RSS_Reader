@@ -6,5 +6,6 @@ export default {
     uiFeed: 'Фиды',
     post: 'Посты',
     add: 'Добавить',
+    view: 'Просмотр',
   },
 };
