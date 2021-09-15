@@ -11,9 +11,9 @@ const parser = (resp) => {
 };
 
 const postBuilder = (post) => {
-  const postTitle = post.querySelector('title').innerHTML;
-  const postDescription = post.querySelector('description').innerHTML;
-  const linkToOrigin = post.querySelector('link').innerHTML;
+  const postTitle = post.querySelector('title').textContent;
+  const postDescription = post.querySelector('description').textContent;
+  const linkToOrigin = post.querySelector('link').textContent;
   const id = _.uniqueId();
   return {
     id, postTitle, postDescription, linkToOrigin,
@@ -24,8 +24,8 @@ export default (rss, baseUrl) => {
   // debugger;
   const data = parser(rss);
 
-  const title = data.querySelector('title').innerHTML;
-  const description = data.querySelector('description').innerHTML;
+  const title = data.querySelector('title').textContent;
+  const description = data.querySelector('description').textContent;
   const posts = Array.from(data.querySelectorAll('item')).map(postBuilder);
   const result = { feed: { title, description, baseUrl }, posts };
   // console.log(result);
