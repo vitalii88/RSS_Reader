@@ -25,7 +25,6 @@ const msgColorStatus = (colorStatus) => {
 
 const viewModal = (data, states) => {
   const watcherState = states;
-  // console.log('viewModal data => ', data);
   document.querySelector('.modal-title').innerHTML = data.title;
   document.querySelector('.modal-body').innerHTML = data.post;
   document.querySelector('.modal-footer > button').innerHTML = i18next.t('modalReadCancel');
@@ -96,7 +95,6 @@ const buildPosts = (data, states) => {
   ul.classList.add('list-group', 'border-0', 'rounded-0');
 
   data.forEach((e) => {
-    // console.log(e);
     const li = document.createElement('LI');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -118,7 +116,6 @@ const buildPosts = (data, states) => {
     button.textContent = i18next.t('view');
 
     button.addEventListener('click', () => {
-      console.log('button click');
       const modalData = {
         title: e.postTitle,
         post: e.postDescription,
@@ -191,12 +188,10 @@ export default (state, path, value) => {
       break;
 
     case 'modal':
-      // console.log('modal view => ', value);
       viewModal(value, state);
       break;
 
     case 'readPost':
-      // console.log('readPost => ', value);
       readPosts(value);
       break;
 
