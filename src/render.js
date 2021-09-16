@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import 'bootstrap';
 
 const input = document.getElementById('url-input');
 const msgBlock = document.querySelector('#errMsg');
@@ -20,6 +21,30 @@ const msgColorStatus = (colorStatus) => {
     default:
       throw new Error('invalid');
   }
+};
+
+const viewModal = (data, states) => {
+  const watcherState = states;
+  // console.log('viewModal data => ', data);
+  document.querySelector('.modal-title').innerHTML = data.title;
+  document.querySelector('.modal-body').innerHTML = data.post;
+  document.querySelector('.modal-footer > button').innerHTML = i18next.t('modalReadCancel');
+  const a = document.querySelector('.modal-footer > a');
+  a.setAttribute('href', data.id);
+  a.innerHTML = i18next.t('modalReadButton');
+  watcherState.readPost = [...watcherState.readPost, data.id];
+};
+
+const readPosts = (data) => {
+  const postsList = document.querySelectorAll('a.fw-bold');
+  data.forEach((e) => {
+    postsList.forEach((link) => {
+      if (link.dataset.id === e) {
+        link.classList.remove('fw-bold');
+        link.classList.add('fw-normal');
+      }
+    });
+  });
 };
 
 const buildFeeds = (data) => {
@@ -52,7 +77,8 @@ const buildFeeds = (data) => {
   card.appendChild(ul);
 };
 
-const buildPosts = (data) => {
+const buildPosts = (data, states) => {
+  const watcherState = states;
   const posts = document.querySelector('.posts');
   posts.innerHTML = '';
   const card = document.createElement('DIV');
@@ -70,6 +96,7 @@ const buildPosts = (data) => {
   ul.classList.add('list-group', 'border-0', 'rounded-0');
 
   data.forEach((e) => {
+    // console.log(e);
     const li = document.createElement('LI');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
 
@@ -88,14 +115,18 @@ const buildPosts = (data) => {
     button.setAttribute('type', 'button');
     button.setAttribute('data-id', e.id);
     button.setAttribute('data-bs-toggle', 'modal');
-    // button.dataset.id = e.id;
-    // button.dataset.bsToggle = 'modal';
-    // button.dataset.bsTarget = '#modal';
     button.textContent = i18next.t('view');
 
     button.addEventListener('click', () => {
-      console.log('button click')
-    })
+      console.log('button click');
+      const modalData = {
+        title: e.postTitle,
+        post: e.postDescription,
+        link: e.linkToOrigin,
+        id: e.id,
+      };
+      watcherState.modal = modalData;
+    });
 
     li.appendChild(button);
     ul.appendChild(li);
@@ -103,6 +134,7 @@ const buildPosts = (data) => {
 
   card.appendChild(ul);
   posts.appendChild(card);
+  readPosts(watcherState.readPost);
 };
 
 const formStatus = (value) => {
@@ -155,7 +187,17 @@ export default (state, path, value) => {
       break;
 
     case 'posts':
-      buildPosts(value);
+      buildPosts(value, state);
+      break;
+
+    case 'modal':
+      // console.log('modal view => ', value);
+      viewModal(value, state);
+      break;
+
+    case 'readPost':
+      // console.log('readPost => ', value);
+      readPosts(value);
       break;
 
     default:

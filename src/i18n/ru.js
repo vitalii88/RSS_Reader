@@ -7,5 +7,7 @@ export default {
     post: 'Посты',
     add: 'Добавить',
     view: 'Просмотр',
+    modalReadButton: 'Читать полностью',
+    modalReadCancel: 'Отмена',
   },
 };

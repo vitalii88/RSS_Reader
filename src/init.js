@@ -35,7 +35,7 @@ const postLoader = (states, feds) => {
 
 export default () => i18next.init({
   lng: 'ru',
-  debug: true,
+  debug: false,
   resources,
 }).then(() => {
   const states = {
@@ -47,6 +47,13 @@ export default () => i18next.init({
     message: '',
     feeds: [],
     posts: [],
+    modal: {
+      title: '',
+      post: '',
+      link: '',
+      id: '',
+    },
+    readPost: [],
   };
 
   const watcherState = onChange(states, (path, value) => render(watcherState, path, value));

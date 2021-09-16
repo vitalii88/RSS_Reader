@@ -7,5 +7,7 @@ export default {
     post: 'Post',
     add: 'Add',
     view: 'View',
+    modalReadButton: 'Read full',
+    modalReadCancel: 'Cancel',
   },
 };

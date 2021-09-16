@@ -5,6 +5,7 @@
   <title>Title</title>
 </head>
 <body>
+<!--  MODAL  -->
 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -16,19 +17,24 @@
 
       </div>
       <div class="modal-footer">
-        <a class="btn btn-primary full-article" href="#" role="button" target="_blank" rel="noopener noreferrer">Читать полностью </a>
+        <a class="btn btn-primary full-article" href="#" role="button" target="_blank" rel="noopener noreferrer">Читать полностью</a>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
       </div>
     </div>
   </div>
 </div>
+<!--  END MODAL  -->
+
 <div class="root">
   <nav class="navbar navbar-light bg-light pt-0">
-    <div class="container-fluid  pt-5 pb-2 bg-dark bg-gradient">
+    <div class="container-fluid  pt-3 pb-2 bg-dark bg-gradient">
       <div class="justify-content-center container-fluid pb-2">
+        <div class="d-flex w-75 centered-top mx-auto text-white pb-1">
+          <h1 class="display-3 mb-0">RSS агрегатор</h1>
+        </div>
         <form class="d-flex w-75 centered-top mx-auto">
           <input class="form-control me-2 shadow-sm" placeholder="Enter link" aria-label="Search" autofocus="" required="" name="url" id="url-input">
-          <button class="btn btn-outline-dark shadow-sm" type="submit">Add</button>
+          <button class="btn btn-primary shadow-sm btn-add" type="submit">Add</button>
         </form>
       </div>
       <div class="container-fluid d-flex w-75">
