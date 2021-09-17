@@ -63,8 +63,8 @@ export default () => i18next.init({
   };
 
   const watcherState = onChange(states, (path, value) => {
-    const result = render(watcherState, path, value, formElements);
-    return result;
+    const view = render(watcherState, path, value, formElements);
+    return view;
   });
 
   formElements.form.addEventListener('submit', (e) => {
@@ -75,7 +75,6 @@ export default () => i18next.init({
     console.log(formData);
 
     validator(formData.get('url')).then((resp) => {
-      console.log(resp);
       states.form.currentUrl = resp;
       if (states.form.urls.includes(resp)) {
         watcherState.message = 'alreadyExists';
