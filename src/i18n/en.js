@@ -9,5 +9,7 @@ export default {
     view: 'View',
     modalReadButton: 'Read full',
     modalReadCancel: 'Cancel',
+    mustBeRss: 'The resource does not contain a valid RSS',
+    networkError: 'Network error',
   },
 };

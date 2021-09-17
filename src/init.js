@@ -1,5 +1,4 @@
-// import _ from 'lodash';
-import * as onChange from 'on-change';
+import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
 import validator from './validator.js';
@@ -56,29 +55,56 @@ export default () => i18next.init({
     readPost: [],
   };
 
-  const watcherState = onChange(states, (path, value) => render(watcherState, path, value));
-  const form = document.querySelector('form');
+  const formElements = {
+    form: document.querySelector('form'),
+    input: document.getElementById('url-input'),
+    msgBlock: document.querySelector('.feedback'),
+    submitBtn: document.querySelector('button[type="submit"]'),
+  };
 
-  form.addEventListener('submit', (e) => {
+  const watcherState = onChange(states, (path, value) => {
+    const result = render(watcherState, path, value, formElements);
+    return result;
+  });
+
+  formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const formData = new FormData(form);
+    formElements.submitBtn.disabled = true;
+    formElements.input.readOnly = true;
+    const formData = new FormData(formElements.form);
+    console.log(formData);
+
     validator(formData.get('url')).then((resp) => {
+      console.log(resp);
       states.form.currentUrl = resp;
       if (states.form.urls.includes(resp)) {
         watcherState.message = 'alreadyExists';
         throw new Error('alreadyExists');
       }
-      watcherState.message = 'success';
-      return watcherState.form.urls.push(resp);
+      watcherState.form.urls.push(resp);
     }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
+      .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
       .then((resp) => {
-        const { feed, posts } = parser(resp.data.contents, states.form.currentUrl);
+        const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
         watcherState.posts = [...posts, ...watcherState.posts];
+        return feed;
+      })
+      .then((feeds) => {
+        watcherState.message = 'success';
+        return feeds;
+      })
+      .then((feed) => {
         setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
-        watcherState.message = err.message;
+        console.log(err);
+        if (err.isAxiosError) {
+          watcherState.message = 'networkError';
+          // throw Error('networkError');
+        } else {
+          watcherState.message = err.message;
+        }
       });
   });
 });

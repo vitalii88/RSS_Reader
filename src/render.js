@@ -1,25 +1,22 @@
 import i18next from 'i18next';
 import 'bootstrap';
 
-const input = document.getElementById('url-input');
-const msgBlock = document.querySelector('#errMsg');
-
-const msgColorStatus = (colorStatus) => {
+const msgColorStatus = (colorStatus, formElements) => {
   switch (colorStatus) {
     case 'success':
-      if (msgBlock.classList.contains('text-danger')) {
-        msgBlock.classList.remove('text-danger');
+      if (formElements.msgBlock.classList.contains('text-danger')) {
+        formElements.msgBlock.classList.remove('text-danger');
       }
-      msgBlock.classList.add('text-success');
+      formElements.msgBlock.classList.add('text-success');
       break;
     case 'danger':
-      if (msgBlock.classList.contains('text-success')) {
-        msgBlock.classList.remove('text-success');
+      if (formElements.msgBlock.classList.contains('text-success')) {
+        formElements.msgBlock.classList.remove('text-success');
       }
-      msgBlock.classList.add('text-danger');
+      formElements.msgBlock.classList.add('text-danger');
       break;
     default:
-      throw new Error('invalid');
+      throw new Error(`invalid state in msgColorStatus: ${colorStatus}`);
   }
 };
 
@@ -69,7 +66,7 @@ const buildFeeds = (data) => {
     li.appendChild(h3);
     const p = document.createElement('P');
     p.classList.add('m-0', 'small', 'text-black-50');
-    p.innerText = e.description;
+    p.textContent = e.description;
     li.appendChild(p);
     ul.appendChild(li);
   });
@@ -134,49 +131,67 @@ const buildPosts = (data, states) => {
   readPosts(watcherState.readPost);
 };
 
-const formStatus = (value) => {
+const formStatus = (value, formElements) => {
+  const elements = formElements;
   switch (value) {
+    case 'null':
+      break;
+
     case 'false':
-      input.classList.add('border', 'border-danger', 'border-2');
+      elements.input.classList.add('border', 'border-danger', 'border-2');
       break;
 
     case 'alreadyExists':
-      msgBlock.textContent = i18next.t('alreadyExists');
-      msgColorStatus('danger');
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('alreadyExists');
       break;
 
     case 'success':
-      msgBlock.textContent = i18next.t('sucsses');
-      msgColorStatus('success');
+      msgColorStatus('success', formElements);
+      elements.msgBlock.textContent = i18next.t('sucsses');
       break;
 
     case 'mustBeUrl':
-      msgBlock.textContent = i18next.t('mustBeUrl');
-      msgColorStatus('danger');
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('mustBeUrl');
+      break;
+
+    case 'mustBeRss':
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('mustBeRss');
+      break;
+
+    case 'networkError':
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('networkError');
       break;
 
     default:
-      throw new Error('invalid state');
+      throw new Error(`invalid state in formStatus value: ${value}`);
   }
+
+  elements.input.readOnly = false;
+  elements.submitBtn.disabled = false;
 };
 
-const cleanInput = () => {
+const cleanInput = (formElement) => {
+  const input = formElement;
   input.value = '';
   return input.onfocus;
 };
 
-export default (state, path, value) => {
+export default (state, path, value, formElements) => {
   switch (path) {
     case 'form.status':
       formStatus(value);
       break;
 
     case 'form.urls':
-      cleanInput();
+      cleanInput(formElements.input);
       break;
 
     case 'message':
-      formStatus(value);
+      formStatus(value, formElements);
       break;
 
     case 'feeds':
@@ -196,6 +211,6 @@ export default (state, path, value) => {
       break;
 
     default:
-      throw new Error('invalid state');
+      throw new Error(`invalid state in default path: ${path} value: ${value}`);
   }
 };
