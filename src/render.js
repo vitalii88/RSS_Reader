@@ -142,7 +142,7 @@ const formStatus = (value) => {
 
     case 'alreadyExists':
       // msgBlock.textContent = i18next.t('alreadyExists');
-      msgBlock.innerHTML = i18next.t('alreadyExists');
+      msgBlock.textContent = i18next.t('alreadyExists');
       msgColorStatus('danger');
       break;
 
