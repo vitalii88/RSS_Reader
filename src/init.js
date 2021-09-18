@@ -1,5 +1,4 @@
-// import _ from 'lodash';
-import * as onChange from 'on-change';
+import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
 import validator from './validator.js';
