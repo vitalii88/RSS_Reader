@@ -61,6 +61,7 @@ export default () => i18next.init({
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(form);
+    console.log(formData.get('url'));
     validator(formData.get('url')).then((resp) => {
       states.form.currentUrl = resp;
       if (states.form.urls.includes(resp)) {

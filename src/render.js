@@ -166,6 +166,7 @@ const cleanInput = () => {
 };
 
 export default (state, path, value) => {
+  // debugger;
   switch (path) {
     case 'form.status':
       formStatus(value);
