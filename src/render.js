@@ -179,7 +179,7 @@ export default (state, path, value) => {
       break;
 
     case 'message':
-      if (value === nul) {
+      if (value === null) {
         console.log('null is here => ', path);
       }
       formStatus(value);
