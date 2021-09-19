@@ -135,7 +135,7 @@ const buildPosts = (data, states) => {
 };
 
 const formStatus = (value) => {
-  debugger;
+  // debugger;
   switch (value) {
     case 'false':
       input.classList.add('border', 'border-danger', 'border-2');
@@ -202,6 +202,6 @@ export default (state, path, value) => {
       break;
 
     default:
-      throw new Error(`invalid state in default path: ${path} value: ${value}`);
+      // throw new Error(`invalid state in default path: ${path} value: ${value}`);
   }
 };
