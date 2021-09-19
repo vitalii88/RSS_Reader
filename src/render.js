@@ -19,7 +19,7 @@ const msgColorStatus = (colorStatus) => {
       msgBlock.classList.add('text-danger');
       break;
     default:
-      throw new Error('invalid');
+      throw new Error(`invalid state in msgColorStatus: ${colorStatus}`);
   }
 };
 
@@ -157,7 +157,7 @@ const formStatus = (value) => {
       break;
 
     default:
-      throw new Error('invalid state');
+      throw new Error(`invalid state in formStatus value: ${value}`);
   }
 };
 
@@ -198,6 +198,6 @@ export default (state, path, value) => {
       break;
 
     default:
-      throw new Error('invalid state');
+      throw new Error(`invalid state in default path: ${path} value: ${value}`);
   }
 };
