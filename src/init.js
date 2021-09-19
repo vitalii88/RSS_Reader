@@ -70,9 +70,8 @@ export default () => i18next.init({
       }
       watcherState.message = 'success';
       return resp;
-    }).then((resp) => {
-      return watcherState.form.urls.push(resp);
-    }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
+    }).then((resp) => watcherState.form.urls.push(resp))
+      .then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
       .then((resp) => {
         const { feed, posts } = parser(resp.data.contents, states.form.currentUrl);
         watcherState.feeds = [feed, ...watcherState.feeds];
