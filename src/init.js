@@ -69,6 +69,8 @@ export default () => i18next.init({
         throw new Error('alreadyExists');
       }
       watcherState.message = 'success';
+      return resp;
+    }).then((resp) => {
       return watcherState.form.urls.push(resp);
     }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
       .then((resp) => {
