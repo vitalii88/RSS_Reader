@@ -158,7 +158,7 @@ const formStatus = (value) => {
       break;
 
     default:
-      throw new Error(`invalid state in formStatus value: ${value}`);
+      // throw new Error(`invalid state in formStatus value: ${value}`);
   }
 };
 
@@ -202,6 +202,6 @@ export default (state, path, value) => {
       break;
 
     default:
-      // throw new Error(`invalid state in default path: ${path} value: ${value}`);
+      throw new Error(`invalid state in default path: ${path} value: ${value}`);
   }
 };
