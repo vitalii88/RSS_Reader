@@ -135,6 +135,7 @@ const buildPosts = (data, states) => {
 };
 
 const formStatus = (value) => {
+  debugger;
   switch (value) {
     case 'false':
       input.classList.add('border', 'border-danger', 'border-2');
@@ -178,6 +179,9 @@ export default (state, path, value) => {
       break;
 
     case 'message':
+      if (value === nul) {
+        console.log('null is here => ', path);
+      }
       formStatus(value);
       break;
 
