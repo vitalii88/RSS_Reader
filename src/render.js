@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import 'bootstrap';
 
 const input = document.getElementById('url-input');
-const msgBlock = document.querySelector('#errMsg');
+const msgBlock = document.getElementById('errMsg');
 
 const msgColorStatus = (colorStatus) => {
   switch (colorStatus) {
