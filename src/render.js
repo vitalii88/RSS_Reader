@@ -137,6 +137,9 @@ const buildPosts = (data, states) => {
 const formStatus = (value) => {
   // debugger;
   switch (value) {
+    case 'null':
+      break;
+
     case 'false':
       input.classList.add('border', 'border-danger', 'border-2');
       break;
@@ -158,7 +161,7 @@ const formStatus = (value) => {
       break;
 
     default:
-      // throw new Error(`invalid state in formStatus value: ${value}`);
+      throw new Error(`invalid state in formStatus value: ${value}`);
   }
 };
 
@@ -179,9 +182,6 @@ export default (state, path, value) => {
       break;
 
     case 'message':
-      if (value === null) {
-        console.log('null is here => ', path);
-      }
       formStatus(value);
       break;
 
