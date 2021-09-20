@@ -145,7 +145,6 @@ const formStatus = (value) => {
       break;
 
     case 'alreadyExists':
-      // msgBlock.textContent = i18next.t('alreadyExists');
       msgBlock.textContent = i18next.t('alreadyExists');
       msgColorStatus('danger');
       break;

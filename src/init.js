@@ -68,15 +68,14 @@ export default () => i18next.init({
         watcherState.message = 'alreadyExists';
         throw new Error('alreadyExists');
       }
-      watcherState.message = 'success';
-      // return resp;
-    }).then((resp) => watcherState.form.urls.push(resp))
-      .then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
+      return watcherState.form.urls.push(resp);
+    }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
       .then((resp) => {
         const { feed, posts } = parser(resp.data.contents, states.form.currentUrl);
         watcherState.feeds = [feed, ...watcherState.feeds];
         watcherState.posts = [...posts, ...watcherState.posts];
         setTimeout(() => postLoader(watcherState, feed), 5000);
+        watcherState.message = 'success';
       })
       .catch((err) => {
         watcherState.message = err.message;
