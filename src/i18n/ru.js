@@ -1,7 +1,7 @@
 export default {
   translation: {
     alreadyExists: 'RSS уже существует',
-    mustBeUrl: 'Ссылка должна быть валидным URL',
+    mustBeUrl: 'Ресурс не содержит валидный RSS',
     sucsses: 'RSS успешно загружен',
     uiFeed: 'Фиды',
     post: 'Посты',
