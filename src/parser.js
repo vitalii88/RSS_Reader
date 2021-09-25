@@ -4,7 +4,7 @@ const parser = (resp) => {
   const data = new DOMParser();
   const parsData = data.parseFromString(resp, 'application/xml');
   if (parsData.querySelector('parsererror')) {
-    throw Error('mustBeUrl');
+    throw Error('networkError');
   }
   return parsData;
 };
@@ -19,8 +19,12 @@ const postBuilder = (post) => {
   };
 };
 
+
+
 export default (rss, baseUrl) => {
   const data = parser(rss);
+
+
 
   const title = data.querySelector('title').textContent;
   const description = data.querySelector('description').textContent;

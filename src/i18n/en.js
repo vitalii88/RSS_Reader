@@ -9,5 +9,6 @@ export default {
     view: 'View',
     modalReadButton: 'Read full',
     modalReadCancel: 'Cancel',
+    networkError: 'The resource does not contain a valid RSS',
   },
 };
