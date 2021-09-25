@@ -4,7 +4,7 @@ const parser = (resp) => {
   const data = new DOMParser();
   const parsData = data.parseFromString(resp, 'application/xml');
   if (parsData.querySelector('parsererror')) {
-    throw Error('networkError');
+    throw Error('mustBeRss');
   }
   return parsData;
 };

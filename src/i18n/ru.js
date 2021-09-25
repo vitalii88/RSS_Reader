@@ -9,6 +9,7 @@ export default {
     view: 'Просмотр',
     modalReadButton: 'Читать полностью',
     modalReadCancel: 'Отмена',
-    networkError: 'Ресурс не содержит валидный RSS',
+    mustBeRss: 'Ресурс не содержит валидный RSS',
+    networkError: 'Ошибка сети',
   },
 };

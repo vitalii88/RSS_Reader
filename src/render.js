@@ -158,6 +158,11 @@ const formStatus = (value, formElements) => {
       elements.msgBlock.textContent = i18next.t('mustBeUrl');
       break;
 
+    case 'mustBeRss':
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('mustBeRss');
+      break;
+
     case 'networkError':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('networkError');

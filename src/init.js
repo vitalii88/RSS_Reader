@@ -96,7 +96,12 @@ export default () => i18next.init({
       })
       .catch((err) => {
         console.log(err);
-        watcherState.message = err.message;
+        if (err.isAxiosError) {
+          watcherState.message = 'networkError';
+          // throw Error('networkError');
+        } else {
+          watcherState.message = err.message;
+        }
       });
   });
 });
