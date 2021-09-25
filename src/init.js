@@ -55,29 +55,47 @@ export default () => i18next.init({
     readPost: [],
   };
 
-  const watcherState = onChange(states, (path, value) => render(watcherState, path, value));
-  const form = document.querySelector('form');
+  const formElements = {
+    form: document.querySelector('form'),
+    input: document.getElementById('url-input'),
+    msgBlock: document.querySelector('.feedback'),
+  };
 
-  form.addEventListener('submit', (e) => {
+  const watcherState = onChange(states, (path, value) => {
+    const result = render(watcherState, path, value, formElements);
+    return result;
+  });
+
+  formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    const formData = new FormData(form);
-    console.log(formData.get('url'));
+    const formData = new FormData(formElements.form);
+    console.log(formData);
+
     validator(formData.get('url')).then((resp) => {
+      console.log(resp);
       states.form.currentUrl = resp;
       if (states.form.urls.includes(resp)) {
         watcherState.message = 'alreadyExists';
         throw new Error('alreadyExists');
       }
-      return watcherState.form.urls.push(resp);
+      watcherState.form.urls.push(resp);
     }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
+      .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
       .then((resp) => {
-        const { feed, posts } = parser(resp.data.contents, states.form.currentUrl);
+        const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
         watcherState.posts = [...posts, ...watcherState.posts];
-        setTimeout(() => postLoader(watcherState, feed), 5000);
+        return feed;
+      })
+      .then((feeds) => {
         watcherState.message = 'success';
+        return feeds;
+      })
+      .then((feed) => {
+        setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
+        console.log(err);
         watcherState.message = err.message;
       });
   });
