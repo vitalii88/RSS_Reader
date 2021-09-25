@@ -161,6 +161,7 @@ const formStatus = (value, formElements) => {
     case 'networkError':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('networkError');
+      break;
 
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);

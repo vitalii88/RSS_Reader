@@ -19,12 +19,8 @@ const postBuilder = (post) => {
   };
 };
 
-
-
 export default (rss, baseUrl) => {
   const data = parser(rss);
-
-
 
   const title = data.querySelector('title').textContent;
   const description = data.querySelector('description').textContent;
