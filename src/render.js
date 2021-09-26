@@ -67,10 +67,11 @@ const buildFeeds = (data) => {
     li.appendChild(h3);
     const p = document.createElement('P');
     p.classList.add('m-0', 'small', 'text-black-50');
-    p.innerText = e.description;
+    p.textContent = e.description;
     li.appendChild(p);
     ul.appendChild(li);
   });
+  debugger;
   card.appendChild(ul);
 };
 
