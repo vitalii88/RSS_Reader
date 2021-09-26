@@ -171,6 +171,9 @@ const formStatus = (value, formElements) => {
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);
   }
+
+  elements.input.readOnly = false;
+  elements.submitBtn.disabled = false;
 };
 
 const cleanInput = (formElement) => {

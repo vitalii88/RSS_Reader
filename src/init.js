@@ -59,6 +59,7 @@ export default () => i18next.init({
     form: document.querySelector('form'),
     input: document.getElementById('url-input'),
     msgBlock: document.querySelector('.feedback'),
+    submitBtn: document.querySelector('button[type="submit"]'),
   };
 
   const watcherState = onChange(states, (path, value) => {
@@ -68,6 +69,8 @@ export default () => i18next.init({
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+    formElements.submitBtn.disabled = true;
+    formElements.input.readOnly = true;
     const formData = new FormData(formElements.form);
     console.log(formData);
 
