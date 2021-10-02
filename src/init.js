@@ -72,7 +72,6 @@ export default () => i18next.init({
     formElements.submitBtn.disabled = true;
     formElements.input.readOnly = true;
     const formData = new FormData(formElements.form);
-    console.log(formData);
 
     validator(formData.get('url')).then((resp) => {
       states.form.currentUrl = resp;
@@ -97,10 +96,8 @@ export default () => i18next.init({
         setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
-        console.log(err);
         if (err.isAxiosError) {
           watcherState.message = 'networkError';
-          // throw Error('networkError');
         } else {
           watcherState.message = err.message;
         }

@@ -14,4 +14,13 @@ To implement the set tasks, this project used:
 * [yup](https://github.com/jquense/yup)
 * [webpack](https://webpack.js.org/)
 
+### Commands
+ * install: `make install`
+ * build minimize project: `make build`
+ * build dev project: `make build-dev`
+ * run local server on port 9000: `make start`
+
+The RSS reader does not store information about the added feeds in local files or a database, therefore, after updating the status pages, the status pages will be reset.
+
+
  ### [Watch the demo on Vercel](https://frontend-project-lvl3-five-blue.vercel.app/)
