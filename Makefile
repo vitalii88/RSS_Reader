@@ -6,6 +6,9 @@ build:
 build-dev:
 	webpack
 
+clean:
+	rm -R ./dist/*
+
 lint:
 	npx eslint .
 

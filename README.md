@@ -19,6 +19,7 @@ To implement the set tasks, this project used:
  * build minimize project: `make build`
  * build dev project: `make build-dev`
  * run local server on port 9000: `make start`
+ * manual clean `dist` directory: `make clean` (webpack automatically clear the directory when building a project)
 
 The RSS reader does not store information about the added feeds in local files or a database, therefore, after updating the status pages, the status pages will be reset.
 
