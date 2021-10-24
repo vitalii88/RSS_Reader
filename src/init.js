@@ -32,37 +32,37 @@ const postLoader = (states, feds) => {
   setTimeout(() => postLoader(states, feds), 5000);
 };
 
+const state = {
+  form: {
+    currentUrl: '',
+    urls: [],
+    status: '',
+  },
+  message: '',
+  feeds: [],
+  posts: [],
+  modal: {
+    title: '',
+    post: '',
+    link: '',
+    id: '',
+  },
+  readPost: [],
+};
+
+const formElements = {
+  form: document.querySelector('form'),
+  input: document.getElementById('url-input'),
+  msgBlock: document.querySelector('.feedback'),
+  submitBtn: document.querySelector('button[type="submit"]'),
+};
+
 export default () => i18next.init({
   lng: 'ru',
   debug: false,
   resources,
 }).then(() => {
-  const states = {
-    form: {
-      currentUrl: '',
-      urls: [],
-      status: '',
-    },
-    message: '',
-    feeds: [],
-    posts: [],
-    modal: {
-      title: '',
-      post: '',
-      link: '',
-      id: '',
-    },
-    readPost: [],
-  };
-
-  const formElements = {
-    form: document.querySelector('form'),
-    input: document.getElementById('url-input'),
-    msgBlock: document.querySelector('.feedback'),
-    submitBtn: document.querySelector('button[type="submit"]'),
-  };
-
-  const watcherState = onChange(states, (path, value) => {
+  const watcherState = onChange(state, (path, value) => {
     const view = render(watcherState, path, value, formElements);
     return view;
   });
@@ -71,17 +71,19 @@ export default () => i18next.init({
     e.preventDefault();
     formElements.submitBtn.disabled = true;
     formElements.input.readOnly = true;
+    // formElements.input.disabled = true;
     const formData = new FormData(formElements.form);
 
-    validator(formData.get('url')).then((resp) => {
-      states.form.currentUrl = resp;
-      if (states.form.urls.includes(resp)) {
+    validator(formData.get('url'), state.form.urls).then((resp) => {
+      // debugger;
+      state.form.currentUrl = resp;
+      if (state.form.urls.includes(resp)) {
         watcherState.message = 'alreadyExists';
         throw new Error('alreadyExists');
       }
       watcherState.form.urls.push(resp);
-    }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
-      .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
+    }).then(() => axios.get(proxy, { params: { url: state.form.currentUrl, ...config } }))
+      .then((axiosResp) => parser(axiosResp.data.contents, state.form.currentUrl))
       .then((resp) => {
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
@@ -94,6 +96,7 @@ export default () => i18next.init({
       })
       .then((feed) => {
         setTimeout(() => postLoader(watcherState, feed), 5000);
+        watcherState.message = 'waiting';
       })
       .catch((err) => {
         if (err.isAxiosError) {

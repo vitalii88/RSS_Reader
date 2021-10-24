@@ -24,10 +24,10 @@ const viewModal = (data, states) => {
   const watcherState = states;
   document.querySelector('.modal-title').innerHTML = data.title;
   document.querySelector('.modal-body').innerHTML = data.post;
-  document.querySelector('.modal-footer > button').innerHTML = i18next.t('modalReadCancel');
+  document.querySelector('.modal-footer > button').innerHTML = i18next.t('modal.modalReadCancel');
   const a = document.querySelector('.modal-footer > a');
   a.setAttribute('href', data.id);
-  a.innerHTML = i18next.t('modalReadButton');
+  a.innerHTML = i18next.t('modal.modalReadButton');
   watcherState.readPost = [...watcherState.readPost, data.id];
 };
 
@@ -51,7 +51,7 @@ const buildFeeds = (data) => {
   const cardBody = document.createElement('DIV');
   cardBody.classList.add('card-body');
   const h2 = document.createElement('H2');
-  h2.innerHTML = i18next.t('uiFeed');
+  h2.innerHTML = i18next.t('ui.uiFeed');
   cardBody.appendChild(h2);
   card.appendChild(cardBody);
   feed.appendChild(card);
@@ -84,7 +84,7 @@ const buildPosts = (data, states) => {
   cardBoby.classList.add('card-body');
   const h2 = document.createElement('H2');
   h2.classList.add('card-title', 'h4');
-  h2.innerHTML = i18next.t('post');
+  h2.innerHTML = i18next.t('ui.post');
   cardBoby.appendChild(h2);
   card.appendChild(cardBoby);
 
@@ -110,7 +110,7 @@ const buildPosts = (data, states) => {
     button.setAttribute('type', 'button');
     button.setAttribute('data-id', e.id);
     button.setAttribute('data-bs-toggle', 'modal');
-    button.textContent = i18next.t('view');
+    button.textContent = i18next.t('ui.view');
 
     button.addEventListener('click', () => {
       const modalData = {
@@ -132,9 +132,10 @@ const buildPosts = (data, states) => {
 };
 
 const formStatus = (value, formElements) => {
+  // debugger;
   const elements = formElements;
   switch (value) {
-    case 'null':
+    case 'waiting':
       break;
 
     case 'false':
@@ -143,35 +144,35 @@ const formStatus = (value, formElements) => {
 
     case 'alreadyExists':
       msgColorStatus('danger', formElements);
-      elements.msgBlock.textContent = i18next.t('alreadyExists');
+      elements.msgBlock.textContent = i18next.t('message.alreadyExists');
       break;
 
     case 'success':
       msgColorStatus('success', formElements);
-      elements.msgBlock.textContent = i18next.t('sucsses');
+      elements.msgBlock.textContent = i18next.t('message.sucsses');
       break;
 
     case 'mustBeUrl':
       msgColorStatus('danger', formElements);
-      elements.msgBlock.textContent = i18next.t('mustBeUrl');
+      elements.msgBlock.textContent = i18next.t('message.mustBeUrl');
       break;
 
     case 'mustBeRss':
       msgColorStatus('danger', formElements);
-      elements.msgBlock.textContent = i18next.t('mustBeRss');
+      elements.msgBlock.textContent = i18next.t('message.mustBeRss');
       break;
 
     case 'networkError':
       msgColorStatus('danger', formElements);
-      elements.msgBlock.textContent = i18next.t('networkError');
+      elements.msgBlock.textContent = i18next.t('message.networkError');
       break;
 
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);
   }
-
   elements.input.readOnly = false;
   elements.submitBtn.disabled = false;
+  elements.input.disabled = false
 };
 
 const cleanInput = (formElement) => {
@@ -181,6 +182,7 @@ const cleanInput = (formElement) => {
 };
 
 export default (state, path, value, formElements) => {
+  // debugger;
   switch (path) {
     case 'form.status':
       formStatus(value);
@@ -188,6 +190,8 @@ export default (state, path, value, formElements) => {
 
     case 'form.urls':
       cleanInput(formElements.input);
+      // formElements.input.setAttribute('disabled', true);
+      formElements.input.disabled = true;
       break;
 
     case 'message':

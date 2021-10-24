@@ -1,5 +1,5 @@
 install:
-	npm сi
+	npm i
 build:
 	NODE_ENV=production npx webpack
 
