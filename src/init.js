@@ -62,10 +62,6 @@ export default () => i18next.init({
   debug: false,
   resources,
 }).then(() => {
-  const watcherState = onChange(state, (path, value) => {
-    const view = render(watcherState, path, value, formElements);
-    return view;
-  });
   const formElements = {
     form: document.querySelector('form'),
     input: document.getElementById('url-input'),
@@ -73,13 +69,18 @@ export default () => i18next.init({
     submitBtn: document.querySelector('button[type="submit"]'),
   };
 
+  const watcherState = onChange(state, (path, value) => {
+    const view = render(watcherState, path, value, formElements);
+    return view;
+  });
+
   formElements.form.addEventListener('submit', (e) => {
   // form.addEventListener('submit', (e) => {
     e.preventDefault();
     formElements.submitBtn.disabled = true;
     formElements.input.readOnly = true;
     formElements.input.disabled = true;
-    // const formData = new FormData(formElements.form);
+    const formData = new FormData(formElements.form);
 
     validator(formData.get('url'), state.form.urls).then((resp) => {
       // debugger;

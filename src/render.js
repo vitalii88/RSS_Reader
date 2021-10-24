@@ -172,7 +172,7 @@ const formStatus = (value, formElements) => {
   }
   elements.input.readOnly = false;
   elements.submitBtn.disabled = false;
-  // elements.input.disabled = false;
+  elements.input.disabled = false;
 };
 
 const cleanInput = (formElement) => {
