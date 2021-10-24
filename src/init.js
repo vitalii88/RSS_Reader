@@ -38,61 +38,58 @@ const postLoader = (states, feds) => {
   setTimeout(() => postLoader(states, feds), 5000);
 };
 
+const state = {
+  form: {
+    currentUrl: '',
+    urls: [],
+    status: '',
+  },
+  message: '',
+  feeds: [],
+  posts: [],
+  modal: {
+    title: '',
+    post: '',
+    link: '',
+    id: '',
+  },
+  readPost: [],
+};
+
+const formElements = {
+  form: document.querySelector('form'),
+  input: document.getElementById('url-input'),
+  msgBlock: document.querySelector('.feedback'),
+  submitBtn: document.querySelector('button[type="submit"]'),
+};
+
 export default () => i18next.init({
   lng: 'ru',
   debug: false,
   resources,
 }).then(() => {
-  const states = {
-    form: {
-      currentUrl: '',
-      urls: [],
-      status: '',
-    },
-    message: '',
-    feeds: [],
-    posts: [],
-    modal: {
-      title: '',
-      post: '',
-      link: '',
-      id: '',
-    },
-    readPost: [],
-  };
-
-  const formElements = {
-    form: document.querySelector('form'),
-    input: document.getElementById('url-input'),
-    msgBlock: document.querySelector('.feedback'),
-    submitBtn: document.querySelector('button[type="submit"]'),
-  };
-
-  const watcherState = onChange(states, (path, value) => {
-    const view = render(watcherState, path, value, formElements);
-    return view;
+  const watcherState = onChange(state, (path, value) => {
+    render(watcherState, path, value, formElements);
   });
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    formElements.submitBtn.disabled = true;
-    formElements.input.readOnly = true;
     const formData = new FormData(formElements.form);
-    console.log(formData);
 
     validator(formData.get('url')).then((resp) => {
-      states.form.currentUrl = resp;
-      if (states.form.urls.includes(resp)) {
+      if (state.form.urls.includes(resp)) {
         watcherState.message = 'alreadyExists';
         throw new Error('alreadyExists');
       }
+      state.form.currentUrl = resp;
+      formElements.submitBtn.disabled = true;
+      formElements.input.readOnly = true;
       watcherState.form.urls.push(resp);
     }).then(() => {
-      // axios.get(proxy, {params: {url: states.form.currentUrl, ...config}});
-      const urlWithProxy = addProxy(states.form.currentUrl);
+      const urlWithProxy = addProxy(state.form.currentUrl);
       return axios.get(urlWithProxy);
     })
-      .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
+      .then((axiosResp) => parser(axiosResp.data.contents, state.form.currentUrl))
       .then((resp) => {
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
@@ -104,13 +101,12 @@ export default () => i18next.init({
         return feeds;
       })
       .then((feed) => {
+        state.message = '';
         setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
-        console.log(err);
         if (err.isAxiosError) {
           watcherState.message = 'networkError';
-          // throw Error('networkError');
         } else {
           watcherState.message = err.message;
         }
