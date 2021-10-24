@@ -171,12 +171,14 @@ const formStatus = (value, formElements) => {
   }
 
   elements.input.readOnly = false;
+  elements.input.disabled = false;
   elements.submitBtn.disabled = false;
 };
 
 const cleanInput = (formElement) => {
   const input = formElement;
   input.value = '';
+  input.disabled = true;
   return input.onfocus;
 };
 
