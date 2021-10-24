@@ -6,6 +6,4 @@ yup.setLocale({
   },
 });
 
-// export default (url) => yup.string().url().required().validate(url);
-export default (url, urls) => yup.string().url().notOneOf(urls).required()
-  .validate(url);
+export default (url) => yup.string().url().required().validate(url);

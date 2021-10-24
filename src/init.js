@@ -6,16 +6,22 @@ import render from './render.js';
 import resources from './i18n/index';
 import parser from './parser.js';
 
-const proxy = 'https://hexlet-allorigins.herokuapp.com/get';
-const config = {
-  disableCache: true,
+// const proxy = 'https://hexlet-allorigins.herokuapp.com/get';
+// const config = {
+//   disableCache: true,
+// };
+const addProxy = (url) => {
+  const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
+  urlWithProxy.searchParams.set('url', url);
+  urlWithProxy.searchParams.set('disableCache', 'true');
+  return urlWithProxy.toString();
 };
-
 const postLoader = (states, feds) => {
   const watcherState = states;
   const { baseUrl } = feds;
+  const urlWithProxy = addProxy(baseUrl);
 
-  axios.get(proxy, { params: { url: baseUrl, ...config } })
+  axios.get(urlWithProxy)
     .then((resp) => {
       const { posts } = parser(resp.data.contents, baseUrl);
       const newPost = [];
@@ -81,7 +87,11 @@ export default () => i18next.init({
         throw new Error('alreadyExists');
       }
       watcherState.form.urls.push(resp);
-    }).then(() => axios.get(proxy, { params: { url: states.form.currentUrl, ...config } }))
+    }).then(() => {
+      // axios.get(proxy, {params: {url: states.form.currentUrl, ...config}});
+      const urlWithProxy = addProxy(states.form.currentUrl);
+      return axios.get(urlWithProxy);
+    })
       .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
       .then((resp) => {
         const { feed, posts } = resp;
