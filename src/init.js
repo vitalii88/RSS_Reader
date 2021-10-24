@@ -49,13 +49,13 @@ const state = {
   },
   readPost: [],
 };
-const form = document.querySelector('form');
-const formElements = {
-  form: document.querySelector('form'),
-  input: document.getElementById('url-input'),
-  msgBlock: document.querySelector('.feedback'),
-  submitBtn: document.querySelector('button[type="submit"]'),
-};
+// const form = document.querySelector('form');
+// const formElements = {
+//   form: document.querySelector('form'),
+//   input: document.getElementById('url-input'),
+//   msgBlock: document.querySelector('.feedback'),
+//   submitBtn: document.querySelector('button[type="submit"]'),
+// };
 
 export default () => i18next.init({
   lng: 'ru',
@@ -66,14 +66,20 @@ export default () => i18next.init({
     const view = render(watcherState, path, value, formElements);
     return view;
   });
+  const formElements = {
+    form: document.querySelector('form'),
+    input: document.getElementById('url-input'),
+    msgBlock: document.querySelector('.feedback'),
+    submitBtn: document.querySelector('button[type="submit"]'),
+  };
 
-  // formElements.form.addEventListener('submit', (e) => {
-  form.addEventListener('submit', (e) => {
+  formElements.form.addEventListener('submit', (e) => {
+  // form.addEventListener('submit', (e) => {
     e.preventDefault();
     formElements.submitBtn.disabled = true;
     formElements.input.readOnly = true;
-    // formElements.input.disabled = true;
-    const formData = new FormData(formElements.form);
+    formElements.input.disabled = true;
+    // const formData = new FormData(formElements.form);
 
     validator(formData.get('url'), state.form.urls).then((resp) => {
       // debugger;
