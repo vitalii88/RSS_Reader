@@ -49,7 +49,7 @@ const state = {
   },
   readPost: [],
 };
-
+const form = document.querySelector('form');
 const formElements = {
   form: document.querySelector('form'),
   input: document.getElementById('url-input'),
@@ -67,7 +67,8 @@ export default () => i18next.init({
     return view;
   });
 
-  formElements.form.addEventListener('submit', (e) => {
+  // formElements.form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
     formElements.submitBtn.disabled = true;
     formElements.input.readOnly = true;
