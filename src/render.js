@@ -26,7 +26,7 @@ const viewModal = (data, states) => {
   document.querySelector('.modal-body').innerHTML = data.post;
   document.querySelector('.modal-footer > button').innerHTML = i18next.t('modalReadCancel');
   const a = document.querySelector('.modal-footer > a');
-  a.setAttribute('href', data.id);
+  a.setAttribute('href', data.link);
   a.innerHTML = i18next.t('modalReadButton');
   watcherState.readPost = [...watcherState.readPost, data.id];
 };

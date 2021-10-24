@@ -1,7 +1,7 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "[![Actions Status](https://github.com/vitalii88/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/vitalii88/frontend-project-lvl3/actions)",
+  "description": "The third training project for the Front-end track. Project goal: immersion in asynchrony and implementation of an application for reading RSS feeds.",
   "main": "src/init.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
