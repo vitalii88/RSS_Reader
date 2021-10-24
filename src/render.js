@@ -172,7 +172,7 @@ const formStatus = (value, formElements) => {
   }
   elements.input.readOnly = false;
   elements.submitBtn.disabled = false;
-  elements.input.disabled = false;
+  // elements.input.disabled = false;
 };
 
 const cleanInput = (formElement) => {
@@ -191,7 +191,7 @@ export default (state, path, value, formElements) => {
 
     case 'form.urls':
       cleanInput(elements.input);
-      elements.input.disabled = true;
+      // elements.input.disabled = true;
       break;
 
     case 'message':
