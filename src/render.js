@@ -172,7 +172,7 @@ const formStatus = (value, formElements) => {
   }
   elements.input.readOnly = false;
   elements.submitBtn.disabled = false;
-  elements.input.disabled = false
+  elements.input.disabled = false;
 };
 
 const cleanInput = (formElement) => {
@@ -183,19 +183,19 @@ const cleanInput = (formElement) => {
 
 export default (state, path, value, formElements) => {
   // debugger;
+  const elements = formElements;
   switch (path) {
     case 'form.status':
       formStatus(value);
       break;
 
     case 'form.urls':
-      cleanInput(formElements.input);
-      // formElements.input.setAttribute('disabled', true);
-      formElements.input.disabled = true;
+      cleanInput(elements.input);
+      elements.input.disabled = true;
       break;
 
     case 'message':
-      formStatus(value, formElements);
+      formStatus(value, elements);
       break;
 
     case 'feeds':
