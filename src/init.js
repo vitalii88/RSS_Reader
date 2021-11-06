@@ -21,6 +21,7 @@ const postLoader = (states, feds) => {
   const { baseUrl } = feds;
   const urlWithProxy = addProxy(baseUrl);
 
+
   axios.get(urlWithProxy)
     .then((resp) => {
       const { posts } = parser(resp.data.contents, baseUrl);
