@@ -94,11 +94,8 @@ export default () => i18next.init({
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
         watcherState.posts = [...posts, ...watcherState.posts];
-        return feed;
-      })
-      .then((feeds) => {
         watcherState.message = 'success';
-        return feeds;
+        return feed;
       })
       .then((feed) => {
         state.message = '';
