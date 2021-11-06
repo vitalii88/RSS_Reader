@@ -94,6 +94,9 @@ export default () => i18next.init({
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
         watcherState.posts = [...posts, ...watcherState.posts];
+        return feed;
+      })
+      .then((feed) => {
         watcherState.message = 'success';
         return feed;
       })
