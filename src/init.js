@@ -56,13 +56,6 @@ const state = {
   readPost: [],
 };
 
-const formElements = {
-  form: document.querySelector('form'),
-  input: document.getElementById('url-input'),
-  msgBlock: document.querySelector('.feedback'),
-  submitBtn: document.querySelector('button[type="submit"]'),
-};
-
 export default () => i18next.init({
   lng: 'ru',
   debug: false,
@@ -71,6 +64,12 @@ export default () => i18next.init({
   const watcherState = onChange(state, (path, value) => {
     render(watcherState, path, value, formElements);
   });
+  const formElements = {
+    form: document.querySelector('form'),
+    input: document.getElementById('url-input'),
+    msgBlock: document.querySelector('.feedback'),
+    submitBtn: document.querySelector('button[type="submit"]'),
+  };
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
