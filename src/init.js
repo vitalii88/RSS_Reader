@@ -6,10 +6,6 @@ import render from './render.js';
 import resources from './i18n/index';
 import parser from './parser.js';
 
-// const proxy = 'https://hexlet-allorigins.herokuapp.com/get';
-// const config = {
-//   disableCache: true,
-// };
 const addProxy = (url) => {
   const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
   urlWithProxy.searchParams.set('url', url);
