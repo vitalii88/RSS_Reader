@@ -1,10 +1,10 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
-import validator from './validator.js';
+import validate from './validate.js';
 import render from './render.js';
-import resources from './i18n/index';
-import parser from './parser.js';
+import resources from './locales/index';
+import parse from './parse.js';
 
 const addProxy = (url) => {
   const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
@@ -19,7 +19,7 @@ const postLoader = (states, feds) => {
 
   axios.get(urlWithProxy)
     .then((resp) => {
-      const { posts } = parser(resp.data.contents, baseUrl);
+      const { posts } = parse(resp.data.contents, baseUrl);
       const newPost = [];
       posts.forEach((e) => {
         if (!states.posts.find((oldPost) => oldPost.linkToOrigin === e.linkToOrigin)) {
@@ -76,7 +76,7 @@ export default () => i18next.init({
     const formData = new FormData(formElements.form);
     console.log(formData);
 
-    validator(formData.get('url')).then((resp) => {
+    validate(formData.get('url')).then((resp) => {
       states.form.currentUrl = resp;
       if (states.form.urls.includes(resp)) {
         watcherState.message = 'alreadyExists';
@@ -88,7 +88,7 @@ export default () => i18next.init({
       const urlWithProxy = addProxy(states.form.currentUrl);
       return axios.get(urlWithProxy);
     })
-      .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
+      .then((axiosResp) => parse(axiosResp.data.contents, states.form.currentUrl))
       .then((resp) => {
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];

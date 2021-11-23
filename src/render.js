@@ -122,6 +122,13 @@ const buildPosts = (data, states) => {
       watcherState.modal = modalData;
     });
 
+    a.addEventListener('click', () => {
+      const linkData = {
+        id: e.id,
+      };
+      watcherState.modal = linkData;
+    });
+
     li.appendChild(button);
     ul.appendChild(li);
   });
@@ -147,7 +154,10 @@ const formStatus = (value, formElements) => {
       break;
 
     case 'success':
+      // console.log(elements.input)
       msgColorStatus('success', formElements);
+      cleanInput(elements.input);
+
       elements.msgBlock.textContent = i18next.t('message.sucsses');
       break;
 
@@ -178,18 +188,26 @@ const formStatus = (value, formElements) => {
 const cleanInput = (formElement) => {
   const input = formElement;
   input.value = '';
+  // input.disabled = true;
+  // return input.onfocus;
+};
+const blockInput = (formElement) => {
+  const input = formElement;
+  // input.value = '';
   input.disabled = true;
   return input.onfocus;
 };
 
 export default (state, path, value, formElements) => {
+  // debugger;
   switch (path) {
     case 'form.status':
       formStatus(value);
       break;
 
     case 'form.urls':
-      cleanInput(formElements.input);
+      // cleanInput(formElements.input);
+      blockInput(formElements.input);
       break;
 
     case 'message':
@@ -209,6 +227,7 @@ export default (state, path, value, formElements) => {
       break;
 
     case 'readPost':
+      debugger;
       readPosts(value);
       break;
 
