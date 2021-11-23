@@ -20,13 +20,13 @@ const msgColorStatus = (colorStatus, formElements) => {
   }
 };
 
-const viewModal = (data, states) => {
-  const watcherState = states;
+const viewModal = (data, state) => {
+  const watcherState = state;
   document.querySelector('.modal-title').innerHTML = data.title;
   document.querySelector('.modal-body').innerHTML = data.post;
   document.querySelector('.modal-footer > button').innerHTML = i18next.t('modal.modalReadCancel');
   const a = document.querySelector('.modal-footer > a');
-  a.setAttribute('href', data.id);
+  a.setAttribute('href', data.link);
   a.innerHTML = i18next.t('modal.modalReadButton');
   watcherState.readPost = [...watcherState.readPost, data.id];
 };
@@ -41,6 +41,18 @@ const readPosts = (data) => {
       }
     });
   });
+};
+
+const controlFormElement = (action = 'unblock', formElements) => {
+  const elements = formElements;
+  if (action === 'block') {
+    elements.submitBtn.disabled = true;
+    elements.input.readOnly = true;
+  } else {
+    elements.submitBtn.disabled = false;
+    elements.input.readOnly = false;
+    elements.input.disabled = false;
+  }
 };
 
 const buildFeeds = (data) => {
@@ -73,8 +85,8 @@ const buildFeeds = (data) => {
   card.appendChild(ul);
 };
 
-const buildPosts = (data, states) => {
-  const watcherState = states;
+const buildPosts = (data, state) => {
+  const watcherState = state;
   const posts = document.querySelector('.posts');
   posts.innerHTML = '';
   const card = document.createElement('DIV');
@@ -122,6 +134,13 @@ const buildPosts = (data, states) => {
       watcherState.modal = modalData;
     });
 
+    a.addEventListener('click', () => {
+      const linkData = {
+        id: e.id,
+      };
+      watcherState.modal = linkData;
+    });
+
     li.appendChild(button);
     ul.appendChild(li);
   });
@@ -131,7 +150,13 @@ const buildPosts = (data, states) => {
   readPosts(watcherState.readPost);
 };
 
+const cleanInput = (formElement) => {
+  const input = formElement;
+  input.value = '';
+};
+
 const formStatus = (value, formElements) => {
+  // debugger;
   const elements = formElements;
   switch (value) {
     case 'null':
@@ -144,21 +169,27 @@ const formStatus = (value, formElements) => {
     case 'alreadyExists':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('message.alreadyExists');
+      controlFormElement('unblock', elements);
       break;
 
     case 'success':
-      msgColorStatus('success', formElements);
+      msgColorStatus('success', elements);
+      controlFormElement('unblock', elements);
+      cleanInput(elements.input);
+
       elements.msgBlock.textContent = i18next.t('message.sucsses');
       break;
 
     case 'mustBeUrl':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('message.mustBeUrl');
+      controlFormElement('unblock', elements);
       break;
 
     case 'mustBeRss':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('message.mustBeRss');
+      controlFormElement('unblock', elements);
       break;
 
     case 'networkError':
@@ -166,34 +197,34 @@ const formStatus = (value, formElements) => {
       elements.msgBlock.textContent = i18next.t('message.networkError');
       break;
 
+    case 'dispatch':
+      controlFormElement('block', formElements);
+      break;
+
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);
   }
 
-  elements.input.readOnly = false;
-  elements.input.disabled = false;
-  elements.submitBtn.disabled = false;
+  // elements.input.readOnly = false;
+  // elements.input.disabled = false;
+  // elements.submitBtn.disabled = false;
 };
 
-const cleanInput = (formElement) => {
+const blockInput = (formElement) => {
   const input = formElement;
-  input.value = '';
   input.disabled = true;
   return input.onfocus;
 };
 
 export default (state, path, value, formElements) => {
+  // debugger;
   switch (path) {
     case 'form.status':
-      formStatus(value);
+      formStatus(value, formElements);
       break;
 
     case 'form.urls':
-      cleanInput(formElements.input);
-      break;
-
-    case 'message':
-      formStatus(value, formElements);
+      blockInput(formElements.input);
       break;
 
     case 'feeds':
@@ -209,6 +240,7 @@ export default (state, path, value, formElements) => {
       break;
 
     case 'readPost':
+      // debugger;
       readPosts(value);
       break;
 

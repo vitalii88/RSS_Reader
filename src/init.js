@@ -1,10 +1,10 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
-import validator from './validator.js';
+import validate from './validate.js';
 import render from './render.js';
-import resources from './i18n/index';
-import parser from './parser.js';
+import resources from './locales/index';
+import parse from './parse.js';
 
 const addProxy = (url) => {
   const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
@@ -12,17 +12,17 @@ const addProxy = (url) => {
   urlWithProxy.searchParams.set('disableCache', 'true');
   return urlWithProxy.toString();
 };
-const postLoader = (states, feds) => {
-  const watcherState = states;
+const postLoader = (state, feds) => {
+  const watcherState = state;
   const { baseUrl } = feds;
   const urlWithProxy = addProxy(baseUrl);
 
   axios.get(urlWithProxy)
     .then((resp) => {
-      const { posts } = parser(resp.data.contents, baseUrl);
+      const { posts } = parse(resp.data.contents, baseUrl);
       const newPost = [];
       posts.forEach((e) => {
-        if (!states.posts.find((oldPost) => oldPost.linkToOrigin === e.linkToOrigin)) {
+        if (!state.posts.find((oldPost) => oldPost.linkToOrigin === e.linkToOrigin)) {
           newPost.push(e);
         }
       });
@@ -31,7 +31,7 @@ const postLoader = (states, feds) => {
       }
       watcherState.posts = [...newPost, ...watcherState.posts];
     });
-  setTimeout(() => postLoader(states, feds), 5000);
+  setTimeout(() => postLoader(state, feds), 5000);
 };
 
 export default () => i18next.init({
@@ -39,7 +39,7 @@ export default () => i18next.init({
   debug: false,
   resources,
 }).then(() => {
-  const states = {
+  const state = {
     form: {
       currentUrl: '',
       urls: [],
@@ -64,31 +64,29 @@ export default () => i18next.init({
     submitBtn: document.querySelector('button[type="submit"]'),
   };
 
-  const watcherState = onChange(states, (path, value) => {
-    const view = render(watcherState, path, value, formElements);
-    return view;
+  const watcherState = onChange(state, (path, value) => {
+    render(watcherState, path, value, formElements);
   });
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    formElements.submitBtn.disabled = true;
-    formElements.input.readOnly = true;
+    // formElements.submitBtn.disabled = true;
+    // formElements.input.readOnly = true;
+    watcherState.form.status = 'dispatch';
     const formData = new FormData(formElements.form);
-    console.log(formData);
 
-    validator(formData.get('url')).then((resp) => {
-      states.form.currentUrl = resp;
-      if (states.form.urls.includes(resp)) {
-        watcherState.message = 'alreadyExists';
+    validate(formData.get('url')).then((resp) => {
+      state.form.currentUrl = resp;
+      if (state.form.urls.includes(resp)) {
+        watcherState.form.status = 'alreadyExists';
         throw new Error('alreadyExists');
       }
       watcherState.form.urls.push(resp);
     }).then(() => {
-      // axios.get(proxy, {params: {url: states.form.currentUrl, ...config}});
-      const urlWithProxy = addProxy(states.form.currentUrl);
+      const urlWithProxy = addProxy(state.form.currentUrl);
       return axios.get(urlWithProxy);
     })
-      .then((axiosResp) => parser(axiosResp.data.contents, states.form.currentUrl))
+      .then((axiosResp) => parse(axiosResp.data.contents, state.form.currentUrl))
       .then((resp) => {
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
@@ -96,19 +94,17 @@ export default () => i18next.init({
         return feed;
       })
       .then((feeds) => {
-        watcherState.message = 'success';
+        watcherState.form.status = 'success';
         return feeds;
       })
       .then((feed) => {
         setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
-        console.log(err);
         if (err.isAxiosError) {
-          watcherState.message = 'networkError';
-          // throw Error('networkError');
+          watcherState.form.status = 'networkError';
         } else {
-          watcherState.message = err.message;
+          watcherState.form.status = err.message;
         }
       });
   });

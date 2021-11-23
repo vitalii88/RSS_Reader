@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const parser = (resp) => {
+const parse = (resp) => {
   const data = new DOMParser();
   const parsData = data.parseFromString(resp, 'application/xml');
   if (parsData.querySelector('parsererror')) {
@@ -20,7 +20,7 @@ const postBuilder = (post) => {
 };
 
 export default (rss, baseUrl) => {
-  const data = parser(rss);
+  const data = parse(rss);
 
   const title = data.querySelector('title').textContent;
   const description = data.querySelector('description').textContent;
