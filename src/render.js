@@ -156,7 +156,6 @@ const cleanInput = (formElement) => {
 };
 
 const formStatus = (value, formElements) => {
-  // debugger;
   const elements = formElements;
   switch (value) {
     case 'null':
@@ -217,7 +216,6 @@ const blockInput = (formElement) => {
 };
 
 export default (state, path, value, formElements) => {
-  // debugger;
   switch (path) {
     case 'form.status':
       formStatus(value, formElements);
@@ -240,7 +238,6 @@ export default (state, path, value, formElements) => {
       break;
 
     case 'readPost':
-      // debugger;
       readPosts(value);
       break;
 
