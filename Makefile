@@ -1,10 +1,13 @@
 install:
-	npm install
+	npm i
 build:
 	NODE_ENV=production npx webpack
 
 build-dev:
 	webpack
+
+clean:
+	rm -R ./dist/*
 
 lint:
 	npx eslint .
