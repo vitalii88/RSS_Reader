@@ -125,20 +125,18 @@ const buildPosts = (data, state) => {
     button.textContent = i18next.t('ui.view');
 
     button.addEventListener('click', () => {
-      const modalData = {
+      watcherState.modal = {
         title: e.postTitle,
         post: e.postDescription,
         link: e.linkToOrigin,
         id: e.id,
       };
-      watcherState.modal = modalData;
     });
 
     a.addEventListener('click', () => {
-      const linkData = {
+      watcherState.modal = {
         id: e.id,
       };
-      watcherState.modal = linkData;
     });
 
     li.appendChild(button);
