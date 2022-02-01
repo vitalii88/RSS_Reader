@@ -1,37 +1,33 @@
 import i18next from 'i18next';
 import 'bootstrap';
 
-const msgColorStatus = (colorStatus, formElements) => {
+const setTextColor = (colorStatus, formElements) => {
   switch (colorStatus) {
     case 'success':
-      if (formElements.msgBlock.classList.contains('text-danger')) {
-        formElements.msgBlock.classList.remove('text-danger');
-      }
+      formElements.msgBlock.classList.remove('text-danger');
       formElements.msgBlock.classList.add('text-success');
       break;
     case 'danger':
-      if (formElements.msgBlock.classList.contains('text-success')) {
-        formElements.msgBlock.classList.remove('text-success');
-      }
+      formElements.msgBlock.classList.remove('text-success');
       formElements.msgBlock.classList.add('text-danger');
       break;
     default:
-      throw new Error(`invalid state in msgColorStatus: ${colorStatus}`);
+      throw new Error(`invalid state in setTextColor: ${colorStatus}`);
   }
 };
 
-const viewModal = (data, state) => {
-  const watcherState = state;
+const showModal = (data, state) => {
+  // const watcherState = state;
   document.querySelector('.modal-title').innerHTML = data.title;
   document.querySelector('.modal-body').innerHTML = data.post;
   document.querySelector('.modal-footer > button').innerHTML = i18next.t('modal.modalReadCancel');
   const a = document.querySelector('.modal-footer > a');
   a.setAttribute('href', data.link);
   a.innerHTML = i18next.t('modal.modalReadButton');
-  watcherState.readPost = [...watcherState.readPost, data.id];
+  state.readPost = [...state.readPost, data.id];
 };
 
-const readPosts = (data) => {
+const markPostAsRead = (data) => {
   const postsList = document.querySelectorAll('a.fw-bold');
   data.forEach((e) => {
     postsList.forEach((link) => {
@@ -43,7 +39,7 @@ const readPosts = (data) => {
   });
 };
 
-const controlFormElement = (action = 'unblock', formElements) => {
+const isDisableFormElement = (action = 'unblock', formElements) => {
   const elements = formElements;
   if (action === 'block') {
     elements.submitBtn.disabled = true;
@@ -145,7 +141,7 @@ const buildPosts = (data, state) => {
 
   card.appendChild(ul);
   posts.appendChild(card);
-  readPosts(watcherState.readPost);
+  markPostAsRead(watcherState.readPost);
 };
 
 const cleanInput = (formElement) => {
@@ -159,55 +155,47 @@ const formStatus = (value, formElements) => {
     case 'null':
       break;
 
-    case 'false':
-      elements.input.classList.add('border', 'border-danger', 'border-2');
-      break;
-
     case 'alreadyExists':
-      msgColorStatus('danger', formElements);
+      setTextColor('danger', elements);
       elements.msgBlock.textContent = i18next.t('message.alreadyExists');
-      controlFormElement('unblock', elements);
+      isDisableFormElement('unblock', elements);
       break;
 
     case 'success':
-      msgColorStatus('success', elements);
-      controlFormElement('unblock', elements);
+      setTextColor('success', elements);
+      isDisableFormElement('unblock', elements);
       cleanInput(elements.input);
 
       elements.msgBlock.textContent = i18next.t('message.sucsses');
       break;
 
     case 'mustBeUrl':
-      msgColorStatus('danger', formElements);
+      setTextColor('danger', elements);
       elements.msgBlock.textContent = i18next.t('message.mustBeUrl');
-      controlFormElement('unblock', elements);
+      isDisableFormElement('unblock', elements);
       break;
 
     case 'mustBeRss':
-      msgColorStatus('danger', formElements);
+      setTextColor('danger', elements);
       elements.msgBlock.textContent = i18next.t('message.mustBeRss');
-      controlFormElement('unblock', elements);
+      isDisableFormElement('unblock', elements);
       break;
 
     case 'networkError':
-      msgColorStatus('danger', formElements);
+      setTextColor('danger', elements);
       elements.msgBlock.textContent = i18next.t('message.networkError');
       break;
 
     case 'dispatch':
-      controlFormElement('block', formElements);
+      isDisableFormElement('block', elements);
       break;
 
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);
   }
-
-  // elements.input.readOnly = false;
-  // elements.input.disabled = false;
-  // elements.submitBtn.disabled = false;
 };
 
-const blockInput = (formElement) => {
+const disableInput = (formElement) => {
   const input = formElement;
   input.disabled = true;
   return input.onfocus;
@@ -216,11 +204,11 @@ const blockInput = (formElement) => {
 export default (state, path, value, formElements) => {
   switch (path) {
     case 'form.status':
-      formStatus(value, formElements);
+      formStatus(value, formElements, state);
       break;
 
     case 'form.urls':
-      blockInput(formElements.input);
+      disableInput(formElements.input);
       break;
 
     case 'feeds':
@@ -232,11 +220,11 @@ export default (state, path, value, formElements) => {
       break;
 
     case 'modal':
-      viewModal(value, state);
+      showModal(value, state);
       break;
 
     case 'readPost':
-      readPosts(value);
+      markPostAsRead(value);
       break;
 
     default:

@@ -1,25 +1,45 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
+import _ from 'lodash';
 import validate from './validate.js';
 import render from './render.js';
 import resources from './locales/index';
 import parse from './parse.js';
 
-const addProxy = (url) => {
+const addUrlProxy = (url) => {
   const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
   urlWithProxy.searchParams.set('url', url);
   urlWithProxy.searchParams.set('disableCache', 'true');
   return urlWithProxy.toString();
 };
-const postLoader = (state, feds) => {
-  const watcherState = state;
-  const { baseUrl } = feds;
-  const urlWithProxy = addProxy(baseUrl);
+
+const postBuilder = (post) => {
+  const postTitle = post.querySelector('title').textContent;
+  const postDescription = post.querySelector('description').textContent;
+  const linkToOrigin = post.querySelector('link').textContent;
+  const id = _.uniqueId();
+  return {
+    id, postTitle, postDescription, linkToOrigin,
+  };
+};
+
+const renderPost = (baseUrl, xmlData) => {
+  const title = xmlData.querySelector('title').textContent;
+  const description = xmlData.querySelector('description').textContent;
+  const posts = Array.from(xmlData.querySelectorAll('item')).map(postBuilder);
+  const result = { feed: { title, description, baseUrl }, posts };
+  return result;
+};
+
+const loadPosts = (state, feed) => {
+  const { baseUrl } = feed;
+  const urlWithProxy = addUrlProxy(baseUrl);
 
   axios.get(urlWithProxy)
     .then((resp) => {
-      const { posts } = parse(resp.data.contents, baseUrl);
+      const xmlData = parse(resp.data.contents);
+      const { posts } = renderPost(baseUrl, xmlData);
       const newPost = [];
       posts.forEach((e) => {
         if (!state.posts.find((oldPost) => oldPost.linkToOrigin === e.linkToOrigin)) {
@@ -29,9 +49,8 @@ const postLoader = (state, feds) => {
       if (newPost.length === 0) {
         return;
       }
-      watcherState.posts = [...newPost, ...watcherState.posts];
+      state.posts = [...newPost, ...state.posts];
     });
-  setTimeout(() => postLoader(state, feds), 5000);
 };
 
 export default () => i18next.init({
@@ -70,23 +89,24 @@ export default () => i18next.init({
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    // formElements.submitBtn.disabled = true;
-    // formElements.input.readOnly = true;
     watcherState.form.status = 'dispatch';
     const formData = new FormData(formElements.form);
 
     validate(formData.get('url')).then((resp) => {
       state.form.currentUrl = resp;
       if (state.form.urls.includes(resp)) {
-        watcherState.form.status = 'alreadyExists';
         throw new Error('alreadyExists');
       }
       watcherState.form.urls.push(resp);
     }).then(() => {
-      const urlWithProxy = addProxy(state.form.currentUrl);
+      const urlWithProxy = addUrlProxy(state.form.currentUrl);
       return axios.get(urlWithProxy);
     })
-      .then((axiosResp) => parse(axiosResp.data.contents, state.form.currentUrl))
+      .then((axiosResp) => {
+        const xmlData = parse(axiosResp.data.contents);
+        const renderedPosts = renderPost(state.form.currentUrl, xmlData);
+        return renderedPosts;
+      })
       .then((resp) => {
         const { feed, posts } = resp;
         watcherState.feeds = [feed, ...watcherState.feeds];
@@ -98,7 +118,7 @@ export default () => i18next.init({
         return feeds;
       })
       .then((feed) => {
-        setTimeout(() => postLoader(watcherState, feed), 5000);
+        setInterval(() => loadPosts(watcherState, feed), 5000, formElements);
       })
       .catch((err) => {
         if (err.isAxiosError) {
