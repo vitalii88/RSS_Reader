@@ -104,8 +104,8 @@ export default () => i18next.init({
     })
       .then((axiosResp) => {
         const xmlData = parse(axiosResp.data.contents);
-        const renderedPosts = renderPost(state.form.currentUrl, xmlData);
-        return renderedPosts;
+        const view = renderPost(state.form.currentUrl, xmlData);
+        return view;
       })
       .then((resp) => {
         const { feed, posts } = resp;
