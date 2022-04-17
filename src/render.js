@@ -22,9 +22,9 @@ const msgColorStatus = (colorStatus, formElements) => {
 
 const viewModal = (data, state) => {
   const watcherState = state;
-  document.querySelector('.modal-title').innerHTML = data.title;
-  document.querySelector('.modal-body').innerHTML = data.post;
-  document.querySelector('.modal-footer > button').innerHTML = i18next.t('modal.modalReadCancel');
+  document.querySelector('.modal-title').textContent = data.title;
+  document.querySelector('.modal-body').textContent = data.post;
+  document.querySelector('.modal-footer > button').textContent = i18next.t('modal.modalReadCancel');
   const a = document.querySelector('.modal-footer > a');
   a.setAttribute('href', data.link);
   a.innerHTML = i18next.t('modal.modalReadButton');
@@ -201,10 +201,6 @@ const formStatus = (value, formElements) => {
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);
   }
-
-  // elements.input.readOnly = false;
-  // elements.input.disabled = false;
-  // elements.submitBtn.disabled = false;
 };
 
 const blockInput = (formElement) => {
@@ -214,6 +210,7 @@ const blockInput = (formElement) => {
 };
 
 export default (state, path, value, formElements) => {
+  console.log('!@!', state, value);
   switch (path) {
     case 'form.status':
       formStatus(value, formElements);
@@ -223,7 +220,7 @@ export default (state, path, value, formElements) => {
       blockInput(formElements.input);
       break;
 
-    case 'feeds':
+    case 'feeds.names':
       buildFeeds(value);
       break;
 

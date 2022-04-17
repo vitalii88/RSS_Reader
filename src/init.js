@@ -7,7 +7,7 @@ import resources from './locales/index';
 import parse from './parse.js';
 
 const addProxy = (url) => {
-  const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
+  const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app');
   urlWithProxy.searchParams.set('url', url);
   urlWithProxy.searchParams.set('disableCache', 'true');
   return urlWithProxy.toString();
@@ -46,7 +46,10 @@ export default () => i18next.init({
       status: '',
     },
     message: '',
-    feeds: [],
+    feeds: {
+      names: [],
+      status: '',
+    },
     posts: [],
     modal: {
       title: '',
@@ -70,34 +73,24 @@ export default () => i18next.init({
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
-    // formElements.submitBtn.disabled = true;
-    // formElements.input.readOnly = true;
     watcherState.form.status = 'dispatch';
     const formData = new FormData(formElements.form);
 
-    validate(formData.get('url')).then((resp) => {
-      state.form.currentUrl = resp;
-      if (state.form.urls.includes(resp)) {
-        watcherState.form.status = 'alreadyExists';
-        throw new Error('alreadyExists');
-      }
-      watcherState.form.urls.push(resp);
-    }).then(() => {
-      const urlWithProxy = addProxy(state.form.currentUrl);
-      return axios.get(urlWithProxy);
-    })
-      .then((axiosResp) => parse(axiosResp.data.contents, state.form.currentUrl))
+    validate(formData.get('url'))
       .then((resp) => {
-        const { feed, posts } = resp;
-        watcherState.feeds = [feed, ...watcherState.feeds];
+        state.form.currentUrl = resp;
+        if (state.form.urls.includes(resp)) {
+          watcherState.form.status = 'alreadyExists';
+          throw new Error('alreadyExists');
+        }
+        watcherState.form.urls.push(resp);
+        const urlWithProxy = addProxy(state.form.currentUrl);
+        return axios.get(urlWithProxy);
+      }).then((axiosResp) => {
+        const { feed, posts } = parse(axiosResp.data.contents, state.form.currentUrl);
+        watcherState.feeds.names = [feed, ...watcherState.feeds.names];
         watcherState.posts = [...posts, ...watcherState.posts];
-        return feed;
-      })
-      .then((feeds) => {
         watcherState.form.status = 'success';
-        return feeds;
-      })
-      .then((feed) => {
         setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
