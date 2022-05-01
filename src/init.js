@@ -58,6 +58,7 @@ export default () => i18next.init({
       id: '',
     },
     readPost: [],
+    error: '',
   };
 
   const formElements = {
@@ -95,9 +96,9 @@ export default () => i18next.init({
       })
       .catch((err) => {
         if (err.isAxiosError) {
-          watcherState.form.status = 'networkError';
+          watcherState.error = 'networkError';
         } else {
-          watcherState.form.status = err.message;
+          watcherState.error = err.message;
         }
       });
   });

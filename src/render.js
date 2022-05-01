@@ -1,6 +1,12 @@
 import i18next from 'i18next';
 import 'bootstrap';
 
+const blockInput = (formElement) => {
+  const input = formElement;
+  input.disabled = true;
+  return input.onfocus;
+};
+
 const msgColorStatus = (colorStatus, formElements) => {
   switch (colorStatus) {
     case 'success':
@@ -177,6 +183,24 @@ const formStatus = (value, formElements) => {
       elements.msgBlock.textContent = i18next.t('message.sucsses');
       break;
 
+    case 'dispatch':
+      controlFormElement('block', formElements);
+      break;
+
+    default:
+      throw new Error(`invalid state in formStatus value: ${value}`);
+  }
+};
+
+const errorsHandler = (value, formElements) => {
+  const elements = formElements;
+
+  switch (value) {
+    case 'networkError':
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('message.networkError');
+      break;
+
     case 'mustBeUrl':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('message.mustBeUrl');
@@ -188,29 +212,13 @@ const formStatus = (value, formElements) => {
       elements.msgBlock.textContent = i18next.t('message.mustBeRss');
       controlFormElement('unblock', elements);
       break;
-
-    case 'networkError':
-      msgColorStatus('danger', formElements);
-      elements.msgBlock.textContent = i18next.t('message.networkError');
-      break;
-
-    case 'dispatch':
-      controlFormElement('block', formElements);
-      break;
-
     default:
       throw new Error(`invalid state in formStatus value: ${value}`);
   }
-};
-
-const blockInput = (formElement) => {
-  const input = formElement;
-  input.disabled = true;
-  return input.onfocus;
+  controlFormElement('unblock', formElements);
 };
 
 export default (state, path, value, formElements) => {
-  console.log('!@!', state, value);
   switch (path) {
     case 'form.status':
       formStatus(value, formElements);
@@ -234,6 +242,10 @@ export default (state, path, value, formElements) => {
 
     case 'readPost':
       readPosts(value);
+      break;
+
+    case 'error':
+      errorsHandler(value, formElements);
       break;
 
     default:
