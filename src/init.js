@@ -1,45 +1,25 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
-import _ from 'lodash';
 import validate from './validate.js';
 import render from './render.js';
 import resources from './locales/index';
 import parse from './parse.js';
 
-const addUrlProxy = (url) => {
-  const urlWithProxy = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
+const addProxy = (url) => {
+  const urlWithProxy = new URL('/get', 'https://allorigins.hexlet.app');
   urlWithProxy.searchParams.set('url', url);
   urlWithProxy.searchParams.set('disableCache', 'true');
   return urlWithProxy.toString();
 };
-
-const postBuilder = (post) => {
-  const postTitle = post.querySelector('title').textContent;
-  const postDescription = post.querySelector('description').textContent;
-  const linkToOrigin = post.querySelector('link').textContent;
-  const id = _.uniqueId();
-  return {
-    id, postTitle, postDescription, linkToOrigin,
-  };
-};
-
-const renderPost = (baseUrl, xmlData) => {
-  const title = xmlData.querySelector('title').textContent;
-  const description = xmlData.querySelector('description').textContent;
-  const posts = Array.from(xmlData.querySelectorAll('item')).map(postBuilder);
-  const result = { feed: { title, description, baseUrl }, posts };
-  return result;
-};
-
-const loadPosts = (state, feed) => {
-  const { baseUrl } = feed;
-  const urlWithProxy = addUrlProxy(baseUrl);
+const postLoader = (state, feds) => {
+  const watcherState = state;
+  const { baseUrl } = feds;
+  const urlWithProxy = addProxy(baseUrl);
 
   axios.get(urlWithProxy)
     .then((resp) => {
-      const xmlData = parse(resp.data.contents);
-      const { posts } = renderPost(baseUrl, xmlData);
+      const { posts } = parse(resp.data.contents, baseUrl);
       const newPost = [];
       posts.forEach((e) => {
         if (!state.posts.find((oldPost) => oldPost.linkToOrigin === e.linkToOrigin)) {
@@ -49,8 +29,9 @@ const loadPosts = (state, feed) => {
       if (newPost.length === 0) {
         return;
       }
-      state.posts = [...newPost, ...state.posts];
+      watcherState.posts = [...newPost, ...watcherState.posts];
     });
+  setTimeout(() => postLoader(state, feds), 5000);
 };
 
 export default () => i18next.init({
@@ -65,7 +46,10 @@ export default () => i18next.init({
       status: '',
     },
     message: '',
-    feeds: [],
+    feeds: {
+      names: [],
+      status: '',
+    },
     posts: [],
     modal: {
       title: '',
@@ -74,6 +58,7 @@ export default () => i18next.init({
       id: '',
     },
     readPost: [],
+    error: '',
   };
 
   const formElements = {
@@ -92,39 +77,28 @@ export default () => i18next.init({
     watcherState.form.status = 'dispatch';
     const formData = new FormData(formElements.form);
 
-    validate(formData.get('url')).then((resp) => {
-      state.form.currentUrl = resp;
-      if (state.form.urls.includes(resp)) {
-        throw new Error('alreadyExists');
-      }
-      watcherState.form.urls.push(resp);
-    }).then(() => {
-      const urlWithProxy = addUrlProxy(state.form.currentUrl);
-      return axios.get(urlWithProxy);
-    })
-      .then((axiosResp) => {
-        const xmlData = parse(axiosResp.data.contents);
-        const view = renderPost(state.form.currentUrl, xmlData);
-        return view;
-      })
+    validate(formData.get('url'))
       .then((resp) => {
-        const { feed, posts } = resp;
-        watcherState.feeds = [feed, ...watcherState.feeds];
+        state.form.currentUrl = resp;
+        if (state.form.urls.includes(resp)) {
+          watcherState.form.status = 'alreadyExists';
+          throw new Error('alreadyExists');
+        }
+        watcherState.form.urls.push(resp);
+        const urlWithProxy = addProxy(state.form.currentUrl);
+        return axios.get(urlWithProxy);
+      }).then((axiosResp) => {
+        const { feed, posts } = parse(axiosResp.data.contents, state.form.currentUrl);
+        watcherState.feeds.names = [feed, ...watcherState.feeds.names];
         watcherState.posts = [...posts, ...watcherState.posts];
-        return feed;
-      })
-      .then((feeds) => {
         watcherState.form.status = 'success';
-        return feeds;
-      })
-      .then((feed) => {
-        setInterval(() => loadPosts(watcherState, feed), 5000, formElements);
+        setTimeout(() => postLoader(watcherState, feed), 5000);
       })
       .catch((err) => {
         if (err.isAxiosError) {
-          watcherState.form.status = 'networkError';
+          watcherState.error = 'networkError';
         } else {
-          watcherState.form.status = err.message;
+          watcherState.error = err.message;
         }
       });
   });
