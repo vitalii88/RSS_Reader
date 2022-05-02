@@ -74,6 +74,8 @@ export default () => i18next.init({
 
   formElements.form.addEventListener('submit', (e) => {
     e.preventDefault();
+    // formElements.submitBtn.disabled = true;
+    // formElements.input.readOnly = true;
     watcherState.form.status = 'dispatch';
     const formData = new FormData(formElements.form);
 
