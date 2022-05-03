@@ -2,7 +2,7 @@ import path from 'path';
 import commonjsVariables from 'commonjs-variables-for-esmodules';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import {CleanWebpackPlugin} from 'clean-webpack-plugin';
+// import {CleanWebpackPlugin} from 'clean-webpack-plugin';
 // const path = require('path');
 // const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -34,7 +34,6 @@ export default {
   },
 
   plugins: [
-    new CleanWebpackPlugin(),
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       template: './index.html',
