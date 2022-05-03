@@ -49,7 +49,7 @@ const readPosts = (data) => {
   });
 };
 
-const controlFormElement = (action = 'unblock', formElements) => {
+const controlFormElement = (formElements, action = 'unblock') => {
   const elements = formElements;
   if (action === 'block') {
     elements.submitBtn.disabled = true;
@@ -171,14 +171,14 @@ const formStatus = (value, formElements) => {
 
     case 'success':
       msgColorStatus('success', elements);
-      controlFormElement('unblock', elements);
+      controlFormElement(elements, 'unblock');
       cleanInput(elements.input);
 
       elements.msgBlock.textContent = i18next.t('message.sucsses');
       break;
 
     case 'dispatch':
-      controlFormElement('block', formElements);
+      controlFormElement(formElements, 'block');
       break;
 
     default:
@@ -213,7 +213,7 @@ const errorsHandler = (value, formElements) => {
     default:
       throw new Error(`invalid state in errorsHandler value: ${value}`);
   }
-  controlFormElement('unblock', formElements);
+  controlFormElement(formElements, 'unblock');
 };
 
 export default (state, path, value, formElements) => {
