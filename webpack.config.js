@@ -2,12 +2,7 @@ import path, { dirname } from 'path';
 // import commonjsVariables from 'commonjs-variables-for-esmodules';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-// import {CleanWebpackPlugin} from 'clean-webpack-plugin';
-// const path = require('path');
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-// import { dirname } from 'path';
+
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

@@ -169,12 +169,6 @@ const formStatus = (value, formElements) => {
       elements.input.classList.add('border', 'border-danger', 'border-2');
       break;
 
-    case 'alreadyExists':
-      msgColorStatus('danger', formElements);
-      elements.msgBlock.textContent = i18next.t('message.alreadyExists');
-      controlFormElement('unblock', elements);
-      break;
-
     case 'success':
       msgColorStatus('success', elements);
       controlFormElement('unblock', elements);
@@ -204,16 +198,20 @@ const errorsHandler = (value, formElements) => {
     case 'mustBeUrl':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('message.mustBeUrl');
-      controlFormElement('unblock', elements);
       break;
 
     case 'mustBeRss':
       msgColorStatus('danger', formElements);
       elements.msgBlock.textContent = i18next.t('message.mustBeRss');
-      controlFormElement('unblock', elements);
       break;
+
+    case 'alreadyExists':
+      msgColorStatus('danger', formElements);
+      elements.msgBlock.textContent = i18next.t('message.alreadyExists');
+      break;
+
     default:
-      throw new Error(`invalid state in formStatus value: ${value}`);
+      throw new Error(`invalid state in errorsHandler value: ${value}`);
   }
   controlFormElement('unblock', formElements);
 };
