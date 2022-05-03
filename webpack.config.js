@@ -1,12 +1,10 @@
 import path, { dirname } from 'path';
-// import commonjsVariables from 'commonjs-variables-for-esmodules';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { fileURLToPath } from 'url';
 
 const dir = dirname(fileURLToPath(import.meta.url));
-// const { __dirname } = commonjsVariables(import.meta);
 
 export default {
   mode: process.env.NODE_ENV || 'development',

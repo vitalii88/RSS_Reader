@@ -83,7 +83,6 @@ export default () => i18next.init({
       .then((resp) => {
         state.form.currentUrl = resp;
         if (state.form.urls.includes(resp)) {
-          // watcherState.error = 'alreadyExists';
           throw new Error('alreadyExists');
         }
         watcherState.form.urls.push(resp);
