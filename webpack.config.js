@@ -5,13 +5,13 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 import { fileURLToPath } from 'url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const dir = dirname(fileURLToPath(import.meta.url));
 // const { __dirname } = commonjsVariables(import.meta);
 
 export default {
   mode: process.env.NODE_ENV || 'development',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(dir, 'dist'),
   },
 
   module: {
@@ -41,7 +41,7 @@ export default {
   devtool: 'source-map',
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(dir, 'dist'),
     },
     port: 9000,
     compress: true,
