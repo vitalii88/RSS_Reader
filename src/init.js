@@ -3,7 +3,7 @@ import i18next from 'i18next';
 import axios from 'axios';
 import validate from './validate.js';
 import render from './render.js';
-import resources from './locales/index';
+import resources from './locales/index.js';
 import parse from './parse.js';
 
 const addProxy = (url) => {
